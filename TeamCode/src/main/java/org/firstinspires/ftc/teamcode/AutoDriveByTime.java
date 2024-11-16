@@ -14,8 +14,18 @@ public class AutoDriveByTime extends LinearOpMode {
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
         waitForStart();
-        robot.driveStraight(.5f, 5, telemetry, this);
+        robot.Lift(-.5f, 2f, telemetry, this);
+        /*
+        robot.driveStraight(.25f, .6f, telemetry, this);
         robot.stopDriving();
+        robot.SidewaysLeft(.25f, .5f, telemetry, this);
+        robot.stopDriving();
+        robot.IntakeArmDown(this, telemetry);
+        robot.Lift(.5f, 2f, telemetry, this);
+        robot.stopLift();
+        robot.Lift(-.5f, 1f, telemetry, this);
+        robot.stopLift();
+        robot.SpecimenClawOpen();*/
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);

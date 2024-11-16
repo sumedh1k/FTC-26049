@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -16,7 +17,10 @@ public class MyHardware {
     DcMotor RBMotor = null; // Right Back motor
     DcMotor LBMotor = null; // Left Back motor
     HardwareMap hwMap = null;
+    DcMotor liftMotor = null;
+    DcMotor liftMotor1 = null;
     ElapsedTime period = new ElapsedTime();
+    Servo claw, IntakeA;
     public MyHardware(){}
     public void init(HardwareMap ahwMap){
         hwMap = ahwMap;
@@ -24,6 +28,10 @@ public class MyHardware {
         RBMotor = hwMap.get(DcMotor.class,   "motor1");
         RFMotor = hwMap.get(DcMotor.class, "motor2");
         LFMotor = hwMap.get(DcMotor.class, "motor3");
+        liftMotor = hwMap.get(DcMotor.class, "lift1");
+        liftMotor1 = hwMap.get(DcMotor.class, "lift2");
+        IntakeA = hwMap.get(Servo.class, "inArm");
+        claw = hwMap.get(Servo.class, "Claw");
         RFMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         RBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.stopDriving();
@@ -37,6 +45,10 @@ public class MyHardware {
         RFMotor.setPower(0);
         LBMotor.setPower(0);
         RBMotor.setPower(0);
+    }
+    public void stopLift(){
+        liftMotor.setPower(0);
+        liftMotor1.setPower(0);
     }
     public void driveStraight(double power, float seconds, Telemetry telemetry, LinearOpMode opMode){
         LFMotor.setPower(-power);
@@ -98,8 +110,34 @@ public class MyHardware {
             telemetry.update();
         }
     }
+    public void Lift(double power, float seconds, Telemetry telemetry, LinearOpMode opMode){
+        liftMotor.setPower(-power);
+        liftMotor1.setPower(power);
+//        +
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ElapsedTime runTime = new ElapsedTime();
+        runTime.reset();
+        while(opMode.opModeIsActive() && (runTime.seconds() < seconds)){
+            telemetry.addData("Path", "Lift: %2.5f S Elapsed", runTime.seconds());
+            telemetry.update();
+        }
+    }
+    public void SpecimenClawOpen(){
+        claw.setPosition(0);
+    }
+    public void SpecimenClawClose(){
+        claw.setPosition(1);
+    }
+    public void IntakeArmDown(LinearOpMode opMode, Telemetry telemetry){
+        IntakeA.setPosition(-0.25);
+        while(opMode.opModeIsActive()){
+            telemetry.addData("Status", "Yes");
+        }
+    }
 }
 /*
+Lift = Motor: -.66, Motor1: .66
 Sideways(To the left)
 all negative
 Sideways(To the right)

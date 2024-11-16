@@ -12,7 +12,7 @@ public class Lift extends LinearOpMode {
     TouchSensor touchSensor;
 
     public void LiftFunc(){
-        double power = -gamepad2.right_stick_y;
+        double power = gamepad2.right_stick_y;
         motor.setPower(power/1.5);
         motor1.setPower(-power/1.5);
 //        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -21,6 +21,8 @@ public class Lift extends LinearOpMode {
 //        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        telemetry.addData("MotorPower", motor.getPower());
+        telemetry.addData("Motor1Power", motor1.getPower());
     }
     @Override
     public void runOpMode(){

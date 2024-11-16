@@ -66,15 +66,19 @@ public class Movement extends LinearOpMode {
     TouchSensor touchSensor;
 
     public void LiftFunc(){
-        double power = -gamepad2.right_stick_y;
-        motor.setPower(power/1.5);
-        motor1.setPower(-power/1.5);
+        double power = gamepad2.right_stick_y;
+        motor.setPower(power);
+        motor1.setPower(-power);
 //        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if (power<=0.25){
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        }
+
 //        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void Intake(){

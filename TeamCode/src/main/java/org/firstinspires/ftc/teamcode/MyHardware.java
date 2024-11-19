@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,6 +22,7 @@ public class MyHardware {
     DcMotor liftMotor1 = null;
     ElapsedTime period = new ElapsedTime();
     Servo claw, IntakeA;
+    CRServo intakeWheel;
     public MyHardware(){}
     public void init(HardwareMap ahwMap){
         hwMap = ahwMap;
@@ -32,6 +34,7 @@ public class MyHardware {
         liftMotor1 = hwMap.get(DcMotor.class, "lift2");
         IntakeA = hwMap.get(Servo.class, "inArm");
         claw = hwMap.get(Servo.class, "Claw");
+        intakeWheel = hwMap.get(CRServo.class, "CR 1");
         RFMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         RBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.stopDriving();
@@ -110,12 +113,23 @@ public class MyHardware {
             telemetry.update();
         }
     }
-    public void Lift(double power, float seconds, Telemetry telemetry, LinearOpMode opMode){
+    public void LiftUp(double power, float seconds, Telemetry telemetry, LinearOpMode opMode){
         liftMotor.setPower(-power);
         liftMotor1.setPower(power);
 //        +
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+        ElapsedTime runTime = new ElapsedTime();
+        runTime.reset();
+        while(opMode.opModeIsActive() && (runTime.seconds() < seconds)){
+            telemetry.addData("Path", "Lift: %2.5f S Elapsed", runTime.seconds());
+            telemetry.update();
+        }
+    }
+    public void LiftDown(double power, float seconds, Telemetry telemetry, LinearOpMode opMode){
+        liftMotor.setPower(power);
+        liftMotor1.setPower(-power);
+//        +
+//
         ElapsedTime runTime = new ElapsedTime();
         runTime.reset();
         while(opMode.opModeIsActive() && (runTime.seconds() < seconds)){
@@ -130,10 +144,25 @@ public class MyHardware {
         claw.setPosition(1);
     }
     public void IntakeArmDown(LinearOpMode opMode, Telemetry telemetry){
-        IntakeA.setPosition(-0.25);
+        IntakeA.setPosition(0.5);
         while(opMode.opModeIsActive()){
             telemetry.addData("Status", "Yes");
         }
+    }
+    public void IntakeArmUp(LinearOpMode opMode, Telemetry telemetry){
+        IntakeA.setPosition(0);
+        while(opMode.opModeIsActive()){
+            telemetry.addData("Status", "Yes");
+        }
+    }
+    public void IntakeArmWheelStop(){
+        intakeWheel.setPower(0);
+    }
+    public void IntakeArmWheelRight(){
+        intakeWheel.setPower(1);
+    }
+    public void IntakeArmWheelLeft(){
+        intakeWheel.setPower(-1);
     }
 }
 /*
